@@ -2,7 +2,6 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import polars as pl
-from altair.examples.pyramid import color
 
 COLORS = {
     'primary': '#FF6B35',  # Orange
@@ -30,7 +29,7 @@ def plot_candy_distribution(candies):
                  title="Candy Popularity by Win Percent")
 
     fig.update_traces(marker_color='orange', marker_line_color='black', marker_line_width=1.5, opacity=0.8)
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_tickangle=-45, yaxis_title="Win Percent", xaxis_title="Candy", height=500)
+    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_tickangle=-45, yaxis_title="Win Percent", xaxis_title="Candy", height=400)
 
     return fig
 
@@ -54,7 +53,7 @@ def plot_sugar_vs_price(candies):
                      labels={'sugarpercent': 'Sugar Percent', 'pricepercent': 'Price Percent'})
 
     fig.update_traces(marker=dict(opacity=0.6, line=dict(width=1, color='black')))
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_title="Sugar Percent", yaxis_title="Price Percent", height=500)
+    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_title="Sugar Percent", yaxis_title="Price Percent", height=400)
 
     return fig
 
@@ -77,7 +76,7 @@ def plot_top_10_candies(candies):
                  title="Top 10 Most Popular Candies")
 
     fig.update_traces(marker_color='orange', marker_line_color='black', marker_line_width=1.5, opacity=0.8)
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_tickangle=-45, height=500)
+    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_tickangle=-45, height=400)
     return fig
 
 
@@ -92,7 +91,7 @@ def plot_candy_attribute_distribution(candies, attribute, title):
                  title=f"{title} Distribution")
 
     fig.update_traces(textposition='inside', textinfo='percent+label', marker=dict(colors=['#FF6B35', '#7209B7']))
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], height=500)
+    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], height=400)
     return fig
 
 
@@ -143,7 +142,7 @@ def plot_best_value_candies(data):
         paper_bgcolor=COLORS['background'],
         plot_bgcolor=COLORS['background'],
         font_color=COLORS['text'],
-        height=600
+        height=400
     ).update_layout(annotations = [
         dict(x=0.25, y=0.95, xref="paper", yref="paper", text="High Value", showarrow=False, font=dict(size=14)),
         dict(x=0.75, y=0.95, xref="paper", yref="paper", text="Popular but Expensive", showarrow=False,

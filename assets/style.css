@@ -1,0 +1,169 @@
+/* Global Styles */
+.StApp {
+    font-family: 'Helvetica', 'Roboto', sans-serif;
+    background-color: #1A1A1A;
+    color: #F1FAEE;
+    margin: 0;
+    padding: 0;
+}
+
+/* Headers */
+.main-header {
+    font-size: 1.8rem;
+    color: #FF6B35;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.sub-header {
+    font-size: 1.2rem;
+    color: #7209B7;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+}
+
+.summary-text {
+    font-size: 1.1rem;
+    color: #A8DADC;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.ul .li {
+    font-size: 1.1rem;
+    color: #A8DADC;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.stSelectbox > div > div > select {
+    color: #A8DADC;
+}
+
+.stMultiSelect > div > div > div > div > input {
+    color: #A8DADC;
+}
+
+/* KPI Card Styles */
+.kpi-card {
+    background-color: #FF6B35;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.25rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Plotly Charts */
+.stPlotlyChart {
+    background-color: #FF6B35;
+    color: #1B1F2B;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.stPlotlyChart:hover {
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Insight Text Box */
+.insight-text {
+    font-size: 1.1rem;
+    color: #F1FAEE;
+    background-color: #1B1F2B;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+    text-align: justify;
+    line-height: 1.6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Data Table */
+.stDataFrame {
+    background-color: #FF6B35;
+    color: #1B1F2B;
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar */
+.sidebar .block-container {
+    background-color: #2B2D42;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.sidebar select {
+    background-color: #FF6B35;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.sidebar .stButton button {
+    background-color: #FF6B35;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .stButton button:hover {
+    background-color: #7209B7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    font-size: 0.9rem;
+    color: #A8DADC;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .main-header {
+        font-size: 2rem;
+    }
+
+    .sub-header {
+        font-size: 1.5rem;
+    }
+
+    .kpi-card {
+        font-size: 1.1rem;
+        padding: 10px;
+    }
+
+    .insight-text {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}

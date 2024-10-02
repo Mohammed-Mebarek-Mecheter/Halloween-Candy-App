@@ -1,4 +1,4 @@
-streamlit
-polars
-plotly
+plotly==5.24.1
+polars==1.9.0
+streamlit==1.38.0
 statsmodels
