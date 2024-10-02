@@ -1,4 +1,5 @@
+pandas==2.2.3
 plotly==5.24.1
 polars==1.9.0
 streamlit==1.38.0
-statsmodels
+statsmodels==0.14.3

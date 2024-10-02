@@ -1,116 +1,156 @@
 # components/candy_comparison.py
 import streamlit as st
 import plotly.graph_objects as go
+import plotly.express as px
 import polars as pl
+import pandas as pd
+
+from components.visualizations import COLORS
+
+def render_candy_comparison(data: pl.DataFrame):
+    """
+    Renders a candy comparison tool in the Streamlit app with donut charts for Win%, Sugar%, and Price%.
+
+    Args:
+        data (pl.DataFrame): The candy dataset.
+    """
+    st.write("Select candies to compare their attributes side by side.")
+
+    # Get list of all candy names
+    candy_names = data['competitorname'].to_list()
+
+    # Allow user to select multiple candies for comparison
+    selected_candies = st.multiselect("Choose candies to compare:", candy_names)
+
+    if len(selected_candies) > 1:
+        # Filter data for selected candies
+        comparison_data = data.filter(pl.col('competitorname').is_in(selected_candies))
+
+        # Create a comparison table with all relevant information
+        comparison_table = create_comparison_table(comparison_data)
+
+        st.dataframe(comparison_table)
+
+        # Plot donut charts for Win%, Sugar%, and Price%
+        plot_bar_charts(comparison_data)
+
+    else:
+        st.write("Please select at least two candies for comparison.")
 
 
-def render_candy_comparison(data):
-    st.write("Select candies and metrics to compare their attributes side by side.")
+def create_comparison_table(data: pl.DataFrame) -> pd.DataFrame:
+    """
+    Creates a comprehensive comparison table for selected candies.
 
-    # Convert data to Polars DataFrame if it's not already
-    if not isinstance(data, pl.DataFrame):
-        data = pl.DataFrame(data)
+    Args:
+        data (pl.DataFrame): Filtered data for selected candies.
 
-    # Allow selection of up to 5 candies
-    selected_candies = st.multiselect(
-        "Select candies to compare (max 5):",
-        data['competitorname'].unique().to_list(),
-        max_selections=5
-    )
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the comparison table.
+    """
+    # List of all attributes to include in the comparison
+    attributes = [
+        'competitorname', 'winpercent', 'sugarpercent', 'pricepercent',
+        'chocolate', 'fruity', 'caramel', 'peanutyalmondy', 'nougat',
+        'crispedricewafer', 'hard', 'bar', 'pluribus'
+    ]
 
-    # Handle empty candy selection
-    if len(selected_candies) == 0:
-        st.write("Please select at least one candy to compare.")
-        return
+    # Select only the relevant columns and convert to pandas DataFrame
+    comparison_df = data.select(attributes).to_pandas()
 
-    # Define metrics for comparison
-    all_metrics = ['winpercent', 'sugarpercent', 'pricepercent', 'chocolate', 'fruity',
-                   'caramel', 'peanutyalmondy', 'nougat', 'crispedricewafer', 'hard', 'bar']
+    # Format the percentage columns
+    for col in ['winpercent', 'sugarpercent', 'pricepercent']:
+        comparison_df[col] = comparison_df[col].apply(lambda x: f"{x:.2f}%")
 
-    # Allow user to select metrics
-    selected_metrics = st.multiselect(
-        "Select metrics to compare:",
-        all_metrics,
-        default=['winpercent', 'sugarpercent', 'pricepercent']
-    )
+    # Replace boolean values with Yes/No
+    bool_columns = ['chocolate', 'fruity', 'caramel', 'peanutyalmondy', 'nougat',
+                    'crispedricewafer', 'hard', 'bar', 'pluribus']
+    for col in bool_columns:
+        comparison_df[col] = comparison_df[col].map({1: 'Yes', 0: 'No'})
 
-    if len(selected_metrics) == 0:
-        st.write("Please select at least one metric to compare.")
-        return
+    # Rename columns for better readability
+    comparison_df = comparison_df.rename(columns={
+        'competitorname': 'Candy Name',
+        'winpercent': 'Win %',
+        'sugarpercent': 'Sugar %',
+        'pricepercent': 'Price %',
+        'peanutyalmondy': 'Peanut/Almond',
+        'crispedricewafer': 'Crisp/Wafer'
+    })
 
-    # Filter the data to include only the selected candies
-    comparison_data = data.filter(pl.col('competitorname').is_in(selected_candies))
+    return comparison_df
 
-    # Create a radar chart for selected candies and metrics
-    fig = go.Figure()
 
-    # Normalize binary metrics to avoid scaling issues in the radar chart
-    binary_metrics = ['chocolate', 'fruity', 'caramel', 'peanutyalmondy', 'nougat', 'crispedricewafer', 'hard', 'bar']
+def plot_bar_charts(data: pl.DataFrame):
+    """
+    Plots three horizontal bar charts side by side for Win%, Sugar%, and Price% for selected candies.
 
-    for candy in selected_candies:
-        candy_data = comparison_data.filter(pl.col('competitorname') == candy)
-        values = []
-        for metric in selected_metrics:
-            if metric in ['winpercent', 'sugarpercent', 'pricepercent']:
-                values.append(candy_data[metric][0] * 100)  # Scale percentages to 100
-            else:
-                values.append(candy_data[metric][0] * 100)  # Scale binary metrics to 100 for radar chart visibility
+    Args:
+        data (pl.DataFrame): Filtered data for selected candies.
+    """
+    # Convert the filtered Polars DataFrame to Pandas for easier manipulation with Plotly
+    comparison_df = data.select(['competitorname', 'winpercent', 'sugarpercent', 'pricepercent']).to_pandas()
 
-        fig.add_trace(go.Scatterpolar(
-            r=values,
-            theta=selected_metrics,
-            fill='toself',
-            name=candy
-        ))
+    # Create columns in Streamlit to display the charts side by side
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        fig1 = create_bar_chart(comparison_df, 'competitorname', 'winpercent', 'Win %')
+        st.plotly_chart(fig1, use_container_width=True)
+
+    with col2:
+        fig2 = create_bar_chart(comparison_df, 'competitorname', 'sugarpercent', 'Sugar %')
+        st.plotly_chart(fig2, use_container_width=True)
+
+    with col3:
+        fig3 = create_bar_chart(comparison_df, 'competitorname', 'pricepercent', 'Price %')
+        st.plotly_chart(fig3, use_container_width=True)
+
+
+def create_bar_chart(df: pd.DataFrame, label_col: str, value_col: str, title: str):
+    """
+    Creates a Plotly horizontal bar chart.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing the data for the chart.
+        label_col (str): Column to use for labels.
+        value_col (str): Column to use for values.
+        title (str): Title of the chart.
+
+    Returns:
+        plotly.graph_objects.Figure: The bar chart figure.
+    """
+    # Generate a color palette based on the number of unique candies
+    unique_candies = df['competitorname'].unique()
+    colors = px.colors.qualitative.Plotly[:len(unique_candies)]
+
+    # Create a dictionary to map candy names to colors
+    color_mapping = {candy: color for candy, color in zip(unique_candies, colors)}
+
+    # Apply the color mapping to the dataframe
+    df['color'] = df['competitorname'].map(color_mapping)
+
+    fig = go.Figure(go.Bar(
+        x=df[value_col],
+        y=df[label_col],
+        marker=dict(
+            color=df['color'],
+            showscale=False,
+        ),
+        orientation='h',  # Horizontal bars
+        text=df[value_col].apply(lambda x: f"{x:.2f}"),  # Rounds the values to two decimal points
+        textposition='auto'
+    ))
 
     fig.update_layout(
-        polar=dict(
-            radialaxis=dict(
-                visible=True,
-                range=[0, 100]  # Ensure all metrics are scaled between 0-100
-            )
-        ),
-        showlegend=True,
-        title="Candy Attribute Comparison",
-        height=600
+        title=title,
+        showlegend=False,
+        xaxis_title=value_col,
+        yaxis_title=label_col,
+        paper_bgcolor=COLORS['background'],
+        plot_bgcolor=COLORS['background'],
+        font_color=COLORS['text'],
+        height=300
     )
 
-    st.plotly_chart(fig, use_container_width=True)
-
-    # Display a table with detailed comparison
-    st.subheader("Detailed Comparison")
-    comparison_table = comparison_data.select(['competitorname'] + selected_metrics)
-    st.dataframe(comparison_table.to_pandas().set_index('competitorname').T.style.format("{:.2f}"))
-
-    # Provide insights based on the comparison
-    st.subheader("Comparison Insights")
-    for candy in selected_candies:
-        candy_data = comparison_data.filter(pl.col('competitorname') == candy)
-        st.write(f"**{candy}**:")
-        for metric in selected_metrics:
-            value = candy_data[metric][0]
-            if metric in ['winpercent', 'sugarpercent', 'pricepercent']:
-                st.write(f"- {metric.capitalize()}: {value * 100:.2f}%")
-            else:
-                st.write(f"- {metric.capitalize()}: {'Yes' if value else 'No'}")
-        st.write("")
-
-    # Add a bar chart for easier comparison of numerical metrics
-    numerical_metrics = [m for m in selected_metrics if m in ['winpercent', 'sugarpercent', 'pricepercent']]
-    if numerical_metrics:
-        st.subheader("Numerical Metrics Comparison")
-        bar_fig = go.Figure()
-        for metric in numerical_metrics:
-            bar_fig.add_trace(go.Bar(
-                x=selected_candies,
-                y=comparison_data[metric] * 100,
-                name=metric.capitalize()
-            ))
-
-        bar_fig.update_layout(
-            title="Comparison of Numerical Metrics",
-            xaxis_title="Candy",
-            yaxis_title="Percentage",
-            barmode='group'
-        )
-        st.plotly_chart(bar_fig, use_container_width=True)
+    return fig
