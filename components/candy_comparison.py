@@ -4,12 +4,12 @@ import plotly.graph_objects as go
 import plotly.express as px
 import polars as pl
 import pandas as pd
-
 from components.visualizations import COLORS
+
 
 def render_candy_comparison(data: pl.DataFrame):
     """
-    Renders a candy comparison tool in the Streamlit app with donut charts for Win%, Sugar%, and Price%.
+    Renders a candy comparison tool in the Streamlit app with bar charts for Win%, Sugar%, and Price%.
 
     Args:
         data (pl.DataFrame): The candy dataset.
@@ -19,8 +19,11 @@ def render_candy_comparison(data: pl.DataFrame):
     # Get list of all candy names
     candy_names = data['competitorname'].to_list()
 
-    # Allow user to select multiple candies for comparison
-    selected_candies = st.multiselect("Choose candies to compare:", candy_names)
+    # Pre-selected candies
+    default_candies = ["Reese's Miniatures", "Twix", "Starburst"]
+
+    # Allow user to select multiple candies for comparison, with pre-selected default options
+    selected_candies = st.multiselect("Choose candies to compare:", candy_names, default=default_candies)
 
     if len(selected_candies) > 1:
         # Filter data for selected candies
@@ -31,7 +34,7 @@ def render_candy_comparison(data: pl.DataFrame):
 
         st.dataframe(comparison_table)
 
-        # Plot donut charts for Win%, Sugar%, and Price%
+        # Plot bar charts for Win%, Sugar%, and Price%
         plot_bar_charts(comparison_data)
 
     else:
@@ -51,7 +54,7 @@ def create_comparison_table(data: pl.DataFrame) -> pd.DataFrame:
     # List of all attributes to include in the comparison
     attributes = [
         'competitorname', 'winpercent', 'sugarpercent', 'pricepercent',
-        'chocolate', 'fruity', 'caramel', 'peanutyalmondy', 'nougat',
+        'chocolate', 'fruity', 'caramel', 'peanutalmondy', 'nougat',  # Corrected typo here
         'crispedricewafer', 'hard', 'bar', 'pluribus'
     ]
 
@@ -63,7 +66,7 @@ def create_comparison_table(data: pl.DataFrame) -> pd.DataFrame:
         comparison_df[col] = comparison_df[col].apply(lambda x: f"{x:.2f}%")
 
     # Replace boolean values with Yes/No
-    bool_columns = ['chocolate', 'fruity', 'caramel', 'peanutyalmondy', 'nougat',
+    bool_columns = ['chocolate', 'fruity', 'caramel', 'peanutalmondy', 'nougat',
                     'crispedricewafer', 'hard', 'bar', 'pluribus']
     for col in bool_columns:
         comparison_df[col] = comparison_df[col].map({1: 'Yes', 0: 'No'})
@@ -74,7 +77,7 @@ def create_comparison_table(data: pl.DataFrame) -> pd.DataFrame:
         'winpercent': 'Win %',
         'sugarpercent': 'Sugar %',
         'pricepercent': 'Price %',
-        'peanutyalmondy': 'Peanut/Almond',
+        'peanutalmondy': 'Peanut/Almond',
         'crispedricewafer': 'Crisp/Wafer'
     })
 
@@ -138,15 +141,15 @@ def create_bar_chart(df: pd.DataFrame, label_col: str, value_col: str, title: st
             showscale=False,
         ),
         orientation='h',  # Horizontal bars
-        text=df[value_col].apply(lambda x: f"{x:.2f}"),  # Rounds the values to two decimal points
+        text=df[value_col].apply(lambda x: f"{x:.2f}%"),  # Ensures percentage display
         textposition='auto'
     ))
 
     fig.update_layout(
         title=title,
         showlegend=False,
-        xaxis_title=value_col,
-        yaxis_title=label_col,
+        xaxis_title=title,
+        yaxis_title="Candy Name",
         paper_bgcolor=COLORS['background'],
         plot_bgcolor=COLORS['background'],
         font_color=COLORS['text'],

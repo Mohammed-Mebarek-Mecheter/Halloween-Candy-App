@@ -7,8 +7,8 @@ COLORS = {
     'primary': '#FF6B35',  # Orange
     'secondary': '#7209B7',  # Purple
     'accent': '#3A86FF',  # Blue
-    'background': '#1A1A1A',  # Dark gray
-    'text': '#F8F9FA',  # Light gray
+    'background': '#1A0933',  # Dark purple
+    'text': '#F1FAEE',  # Light gray
 }
 
 def plot_candy_distribution(candies):
@@ -57,6 +57,7 @@ def plot_sugar_vs_price(candies):
 
     return fig
 
+
 def plot_top_10_candies(candies):
     """
     Plots a bar chart showing the winpercent distribution for the top 10 candies.
@@ -68,32 +69,53 @@ def plot_top_10_candies(candies):
         Plotly Figure: Bar chart of top 10 candy winpercent distribution.
     """
     top_10 = candies.sort('winpercent', descending=True).head(10)
-    fig = px.bar(top_10.to_pandas(),
+
+    # Convert the Polars DataFrame to Pandas for easier use with Plotly
+    top_10_df = top_10.to_pandas()
+
+    # Round the 'winpercent' values to two decimal points
+    top_10_df['winpercent'] = top_10_df['winpercent'].round(2)
+
+    # Create the bar chart
+    fig = px.bar(top_10_df,
                  x='competitorname',
                  y='winpercent',
-                 text='winpercent',
+                 text=top_10_df['winpercent'].apply(lambda x: f"{x:.2f}"),  # Display rounded values as text
                  labels={'competitorname': 'Candy', 'winpercent': 'Win Percent'},
                  title="Top 10 Most Popular Candies")
 
+    # Update the appearance of the chart
     fig.update_traces(marker_color='orange', marker_line_color='black', marker_line_width=1.5, opacity=0.8)
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], xaxis_tickangle=-45, height=400)
+    fig.update_layout(paper_bgcolor=COLORS['background'],
+                      plot_bgcolor=COLORS['background'],
+                      font_color=COLORS['text'],
+                      xaxis_tickangle=-45,
+                      height=400)
+
     return fig
 
-
 def plot_candy_attribute_distribution(candies, attribute, title):
+    # Convert the candies DataFrame to Pandas and calculate the attribute distribution
     attribute_distribution = candies.to_pandas()[attribute].value_counts().reset_index()
     attribute_distribution.columns = [attribute, 'count']
 
+    # Mapping 1 -> "Chocolate" and 0 -> "Non-Chocolate"
+    if attribute == 'chocolate':  # If we're dealing with the 'chocolate' attribute
+        attribute_distribution[attribute] = attribute_distribution[attribute].map({1: 'Chocolate', 0: 'Non-Chocolate'})
+
+    # Create a donut chart
     fig = px.pie(attribute_distribution,
                  names=attribute,
                  values='count',
                  hole=0.4,  # Create a donut chart
                  title=f"{title} Distribution")
 
+    # Update the layout and colors
     fig.update_traces(textposition='inside', textinfo='percent+label', marker=dict(colors=['#FF6B35', '#7209B7']))
-    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'], height=400)
-    return fig
+    fig.update_layout(paper_bgcolor=COLORS['background'], plot_bgcolor=COLORS['background'], font_color=COLORS['text'],
+                      height=400)
 
+    return fig
 
 def get_best_value_candies(data):
     """
@@ -125,7 +147,6 @@ def plot_best_value_candies(data):
             showscale=True,
             colorbar=dict(title='Win %')
         ),
-        text=df['competitorname'],
         hovertext=[f"{name}<br>Win: {win:.2f}%<br>Price: {price:.2f}" for name, win, price in zip(df['competitorname'], df['winpercent'], df['pricepercent'])]
     ))
 

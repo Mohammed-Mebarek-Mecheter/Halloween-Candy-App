@@ -1,75 +1,68 @@
 /* Global Styles */
-.StApp {
-    font-family: 'Helvetica', 'Roboto', sans-serif;
-    background-color: #1A1A1A;
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1A0933;
     color: #F1FAEE;
     margin: 0;
     padding: 0;
 }
 
+header, .viewerBadge_link__1S137, footer {
+    visibility: hidden;
+    height: 0;
+    display: none;
+}
+
+.stApp {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎃</text></svg>');
+    background-size: 50px 50px;
+    background-repeat: repeat;
+    background-blend-mode: soft-light;
+}
+
 /* Headers */
 .main-header {
-    font-size: 1.8rem;
+    font-family: 'Creepster', cursive;
+    font-size: 2.5rem;
     color: #FF6B35;
     text-align: center;
     margin-bottom: 2rem;
-    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .sub-header {
-    font-size: 1.2rem;
-    color: #7209B7;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-    text-align: center;
-}
-
-.summary-text {
-    font-size: 1.1rem;
-    color: #A8DADC;
+    font-family: 'Creepster', cursive;
+    font-size: 1.8rem;
+    color: #FF6B35;
+    margin-top: 2rem;
     margin-bottom: 1.5rem;
     text-align: center;
-}
-
-.ul .li {
-    font-size: 1.1rem;
-    color: #A8DADC;
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.stSelectbox > div > div > select {
-    color: #A8DADC;
-}
-
-.stMultiSelect > div > div > div > div > input {
-    color: #A8DADC;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 /* KPI Card Styles */
 .kpi-card {
-    background-color: #FF6B35;
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
     padding: 15px;
     border-radius: 15px;
     color: white;
     text-align: center;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .kpi-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* Plotly Charts */
 .stPlotlyChart {
-    background-color: #FF6B35;
-    color: #1B1F2B;
+    background-color: rgba(255, 107, 53, 0.1);
     border-radius: 10px;
-    padding: 0.5rem;
+    padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
 }
@@ -78,23 +71,10 @@
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Insight Text Box */
-.insight-text {
-    font-size: 1.1rem;
-    color: #F1FAEE;
-    background-color: #1B1F2B;
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-top: 2rem;
-    text-align: justify;
-    line-height: 1.6;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 /* Data Table */
 .stDataFrame {
-    background-color: #FF6B35;
-    color: #1B1F2B;
+    background-color: rgba(255, 107, 53, 0.1);
+    color: #F1FAEE;
     border-radius: 10px;
     padding: 0.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -105,14 +85,16 @@
     background-color: #2B2D42;
     border-radius: 10px;
     padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-.sidebar select {
+.sidebar select, .sidebar .stSlider {
     background-color: #FF6B35;
     color: white;
     padding: 10px;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
 }
 
 .sidebar .stButton button {
@@ -122,32 +104,15 @@
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .sidebar .stButton button:hover {
     background-color: #7209B7;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    transform: scale(1.05);
 }
 
-/* Footer */
-.footer {
-    text-align: center;
-    margin-top: 3rem;
-    padding: 2rem;
-    font-size: 0.9rem;
-    color: #A8DADC;
-}
-
-/* Media Queries */
+/* Responsive Design */
 @media (max-width: 768px) {
     .main-header {
         font-size: 2rem;
@@ -158,12 +123,29 @@
     }
 
     .kpi-card {
-        font-size: 1.1rem;
-        padding: 10px;
+        font-size: 1rem;
+        padding: 15px;
     }
 
-    .insight-text {
-        font-size: 1rem;
-        padding: 1rem;
+    .stPlotlyChart, .stDataFrame {
+        padding: 0.5rem;
     }
+}
+
+/* Halloween-themed scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1A0933;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #FF6B35;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #7209B7;
 }
