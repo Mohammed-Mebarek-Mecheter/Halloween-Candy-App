@@ -11,6 +11,7 @@ Before running the dashboard, make sure you have the following installed:
 - Streamlit
 - Polars (for fast data processing)
 - Plotly (for visualizations)
+- Pandas (for data processing)
 
 ### Installation
 
@@ -112,12 +113,6 @@ These candies will likely appeal to a wide variety of trick-or-treaters and ensu
 - The app uses a **Halloween-themed color palette** featuring orange, purple, and dark gray.
 - Charts are created with **Plotly** for interactive and responsive visualizations, ensuring a smooth user experience across devices.
 - The sidebar allows for **real-time filtering** of candy data based on attributes such as chocolate content, fruity flavors, sugar content, and price percentile.
-
-## 📝 Future Improvements
-- Add more advanced filtering options such as **multi-select** for candy attributes.
-- Enhance the **Candy Comparison Tool** with more attributes for deeper comparisons.
-- Implement **mobile responsiveness** to improve the user experience on smaller screens.
-- Add **downloadable reports** for users to export their analysis results as CSV files.
 
 ---
 
